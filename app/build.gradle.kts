@@ -6,6 +6,7 @@ import java.util.Properties
 plugins {
 	id("com.android.application")
 	kotlin("android")
+
 }
 
 val (versionMajor, versionMinor, versionPatch, versionBuild) = listOf(1, 0, 0, 0)
@@ -26,6 +27,8 @@ fun generateVersionName(): String {
 }
 
 android {
+	apply(from = "../versions.gradle.kts")
+
 	compileSdk = 33
 
 	namespace = "fr.beapp.interviews.bicloo.andro"
@@ -62,19 +65,19 @@ android {
 		// clone flavors
 		create("qa") {
 			dimension = "env"
-			buildConfigField("String", "JCDECAUX_API", "\"api.jcdecaux.com/vls/v3\"")
+			buildConfigField("String", "JCDECAUX_API", "\"api.jcdecaux.com/vls/v1\"")
 			buildConfigField("String", "JCDECAUX_API_KEY", "\"$jCDecauxApiKey\"")
 		}
 
 		create("preprod") {
 			dimension = "env"
-			buildConfigField("String", "JCDECAUX_API", "\"api.jcdecaux.com/vls/v3\"")
+			buildConfigField("String", "JCDECAUX_API", "\"api.jcdecaux.com/vls/v1\"")
 			buildConfigField("String", "JCDECAUX_API_KEY", "\"$jCDecauxApiKey\"")
 		}
 
 		create("prod") {
 			dimension = "env"
-			buildConfigField("String", "JCDECAUX_API", "\"api.jcdecaux.com/vls/v3\"")
+			buildConfigField("String", "JCDECAUX_API", "\"api.jcdecaux.com/vls/v1\"")
 			buildConfigField("String", "JCDECAUX_API_KEY", "\"$jCDecauxApiKey\"")
 		}
 	}
@@ -109,6 +112,7 @@ android {
 
 dependencies {
 
+
 	coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
 	// basics
 	implementation("androidx.core:core-ktx:1.10.1")
@@ -128,6 +132,7 @@ dependencies {
 	implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
 	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
 	implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
+	implementation("androidx.activity:activity-ktx:1.7.2")
 
 	// google services
 	implementation("com.google.android.gms:play-services-auth:20.5.0")
