@@ -7,7 +7,7 @@ import fr.beapp.interviews.bicloo.kmm.core.CoreHelper
 // Need to be initialized in onCreate() Application class, using PreferenceStorage.init(context)
 actual class PreferenceStorage {
 	actual companion object {
-		private val SHARED_PREFERENCES_NAME = "${CoreHelper.appId}_preferences"
+		private val SHARED_PREFERENCES_NAME = "${CoreHelper.environmentInfo.environment}_preferences"
 		private lateinit var sharedPreferences: SharedPreferences
 		fun init(context: Context) {
 			sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)

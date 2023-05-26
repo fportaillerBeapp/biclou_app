@@ -1,3 +1,8 @@
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.InputStreamReader
+import java.util.Properties
+
 plugins {
 	id("com.android.application")
 	kotlin("android")
@@ -41,18 +46,36 @@ android {
 
 	flavorDimensions.add("env")
 
+	val properties = Properties()
+	val localProperties = File("local.properties")
+	if (localProperties.exists() && localProperties.isFile) {
+		InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
+			properties.load(reader)
+		}
+	} else {
+		throw FileNotFoundException("local.properties file not found")
+	}
+
+	val jCDecauxApiKey = properties.getProperty("JCDECAUX_API_KEY")
+
 	productFlavors {
 		// clone flavors
 		create("qa") {
 			dimension = "env"
+			buildConfigField("String", "JCDECAUX_API", "\"api.jcdecaux.com/vls/v3\"")
+			buildConfigField("String", "JCDECAUX_API_KEY", "\"$jCDecauxApiKey\"")
 		}
 
 		create("preprod") {
 			dimension = "env"
+			buildConfigField("String", "JCDECAUX_API", "\"api.jcdecaux.com/vls/v3\"")
+			buildConfigField("String", "JCDECAUX_API_KEY", "\"$jCDecauxApiKey\"")
 		}
 
 		create("prod") {
 			dimension = "env"
+			buildConfigField("String", "JCDECAUX_API", "\"api.jcdecaux.com/vls/v3\"")
+			buildConfigField("String", "JCDECAUX_API_KEY", "\"$jCDecauxApiKey\"")
 		}
 	}
 
@@ -92,6 +115,9 @@ dependencies {
 	implementation("androidx.appcompat:appcompat:1.6.1")
 	implementation("com.google.android.material:material:1.9.0")
 	implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
+	//kmm
+	implementation(project(":kmm"))
 
 	// Image
 	implementation("io.coil-kt:coil:2.3.0")

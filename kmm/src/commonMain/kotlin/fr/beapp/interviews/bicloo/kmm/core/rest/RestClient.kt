@@ -9,6 +9,7 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
@@ -26,24 +27,22 @@ import kotlinx.serialization.json.JsonElement
 internal class RestClient(val client: HttpClient) {
 
 	val urlHost = CoreHelper.environmentInfo.urlHost
-	private val appId = CoreHelper.appId
-	private val deviceId = CoreHelper.deviceId
 
 	suspend inline fun <reified T> getWithStatus(
 		path: String,
 		params: Map<String, Any?> = emptyMap(),
 		isAuthRequired: Boolean,
 		serializer: KSerializer<T>,
-		isDeviceIdRequired: Boolean = false,
 	): ResultDTO<T> {
 		val response = client.get {
-			headers(isDeviceIdRequired)
+			headers()
 			url {
 				protocol = URLProtocol.HTTPS
 				host = urlHost
 				encodedPath = path
 				params.forEach { param -> param.value?.let { addParameter(param.key, it) } }
 				authParameter(isAuthRequired)
+				setApiKey()
 			}
 		}
 		return json.decodeFromString(ResultDTO.serializer(serializer), response.bodyAsText())
@@ -54,9 +53,8 @@ internal class RestClient(val client: HttpClient) {
 		params: Map<String, Any?> = emptyMap(),
 		isAuthRequired: Boolean,
 		serializer: KSerializer<T>,
-		isDeviceIdRequired: Boolean = false,
 	): T {
-		return getWithStatus(path, params, isAuthRequired, serializer, isDeviceIdRequired).getResponseData()
+		return getWithStatus(path, params, isAuthRequired, serializer).getResponseData()
 	}
 
 	suspend inline fun <reified T> get(
@@ -65,12 +63,10 @@ internal class RestClient(val client: HttpClient) {
 		params: Map<String, String?> = emptyMap(),
 		isAuthRequired: Boolean,
 		serializer: KSerializer<T>,
-		isDeviceIdRequired: Boolean = false,
 	): T {
 		return get(
 			path, params, isAuthRequired,
-			serializer = MapSerializer(String.serializer(), JsonElement.serializer()),
-			isDeviceIdRequired = isDeviceIdRequired
+			serializer = MapSerializer(String.serializer(), JsonElement.serializer())
 		)[key]?.let { json.decodeFromJsonElement(serializer, it) } ?: throw DataIntegrityException("Missing key $key")
 	}
 
@@ -79,25 +75,24 @@ internal class RestClient(val client: HttpClient) {
 		params: Map<String, String?> = emptyMap(),
 		isAuthRequired: Boolean,
 		serializer: KSerializer<U>,
-		isDeviceIdRequired: Boolean = false
-	): ResultDTO<U> = postWithStatus<Any, U>(path, params, content = null, isAuthRequired = isAuthRequired, serializer = serializer, isDeviceIdRequired = isDeviceIdRequired)
+	) = postWithStatus<Any, U>(path, params, content = null, isAuthRequired = isAuthRequired, serializer = serializer)
 
 	suspend inline fun <reified T, reified U> postWithStatus(
 		path: String,
 		params: Map<String, String?> = emptyMap(),
 		content: T?,
 		isAuthRequired: Boolean,
-		serializer: KSerializer<U>,
-		isDeviceIdRequired: Boolean = false
+		serializer: KSerializer<U>
 	): ResultDTO<U> {
 		val response = client.post {
-			headers(isDeviceIdRequired)
+			headers()
 			url {
 				protocol = URLProtocol.HTTPS
 				host = urlHost
 				encodedPath = path
 				params.forEach { param -> param.value?.let { addParameter(param.key, it) } }
 				authParameter(isAuthRequired)
+				setApiKey()
 			}
 			setBody(content ?: EmptyContent)
 		}
@@ -109,8 +104,7 @@ internal class RestClient(val client: HttpClient) {
 		params: Map<String, String?> = emptyMap(),
 		isAuthRequired: Boolean,
 		serializer: KSerializer<U>,
-		isDeviceIdRequired: Boolean = false,
-	): U = post<Any, U>(path = path, params = params, content = null, isAuthRequired = isAuthRequired, serializer = serializer, isDeviceIdRequired = isDeviceIdRequired)
+	): U = post<Any, U>(path = path, params = params, content = null, isAuthRequired = isAuthRequired, serializer = serializer)
 
 	suspend inline fun <reified T, reified U> post(
 		path: String,
@@ -118,9 +112,8 @@ internal class RestClient(val client: HttpClient) {
 		content: T?,
 		isAuthRequired: Boolean,
 		serializer: KSerializer<U>,
-		isDeviceIdRequired: Boolean = false,
 	): U {
-		return postWithStatus(path, params, content, isAuthRequired, serializer, isDeviceIdRequired).getResponseData()
+		return postWithStatus(path, params, content, isAuthRequired, serializer).getResponseData()
 	}
 
 	suspend inline fun <reified U> post(
@@ -128,9 +121,8 @@ internal class RestClient(val client: HttpClient) {
 		key: String,
 		params: Map<String, String?> = emptyMap(),
 		isAuthRequired: Boolean,
-		serializer: KSerializer<U>,
-		isDeviceIdRequired: Boolean = false
-	): U = post<Any, U>(path, key, params, content = null, isAuthRequired = isAuthRequired, serializer = serializer, isDeviceIdRequired = isDeviceIdRequired)
+		serializer: KSerializer<U>
+	): U = post<Any, U>(path, key, params, content = null, isAuthRequired = isAuthRequired, serializer = serializer)
 
 	suspend inline fun <reified T, reified U> post(
 		path: String,
@@ -138,13 +130,10 @@ internal class RestClient(val client: HttpClient) {
 		params: Map<String, String?> = emptyMap(),
 		content: T?,
 		isAuthRequired: Boolean,
-		serializer: KSerializer<U>,
-		isDeviceIdRequired: Boolean = false
+		serializer: KSerializer<U>
 	): U {
 		return post(
-			path, params, content, isAuthRequired,
-			serializer = MapSerializer(String.serializer(), serializer),
-			isDeviceIdRequired = isDeviceIdRequired
+			path, params, content, isAuthRequired, MapSerializer(String.serializer(), serializer)
 		)[key] ?: throw DataIntegrityException("Missing key $key")
 	}
 
@@ -153,17 +142,17 @@ internal class RestClient(val client: HttpClient) {
 		params: Map<String, String?> = emptyMap(),
 		content: T? = null,
 		isAuthRequired: Boolean,
-		serializer: KSerializer<U>,
-		isDeviceIdRequired: Boolean = false
+		serializer: KSerializer<U>
 	): U {
 		val response = client.put {
-			headers(isDeviceIdRequired)
+			headers()
 			url {
 				protocol = URLProtocol.HTTPS
 				host = urlHost
 				encodedPath = path
 				params.forEach { param -> param.value?.let { addParameter(param.key, it) } }
 				authParameter(isAuthRequired)
+				setApiKey()
 			}
 			setBody(content ?: EmptyContent)
 		}
@@ -175,31 +164,33 @@ internal class RestClient(val client: HttpClient) {
 		params: Map<String, String?> = emptyMap(),
 		content: T? = null,
 		isAuthRequired: Boolean,
-		serializer: KSerializer<U>,
-		isDeviceIdRequired: Boolean = false
+		serializer: KSerializer<U>
 	): U {
 		val response = client.delete {
-			headers(isDeviceIdRequired)
+			headers()
 			url {
 				protocol = URLProtocol.HTTPS
 				host = urlHost
 				encodedPath = path
 				params.forEach { param -> param.value?.let { addParameter(param.key, it) } }
 				authParameter(isAuthRequired)
+				setApiKey()
 			}
 			setBody(content ?: EmptyContent)
 		}
 		return json.decodeFromString(ResultDTO.serializer(serializer), response.bodyAsText()).getResponseData()
 	}
 
-	internal fun HttpRequestBuilder.headers(isDeviceIdRequired: Boolean) {
-		header("appid", appId)
-		if (isDeviceIdRequired) header("deviceid", deviceId)
+	internal fun HttpRequestBuilder.headers() {
 		header(HttpHeaders.ContentType, ContentType.Application.Json)
 	}
 
 	@Suppress("UNUSED_PARAMETER")
 	internal fun HttpRequestBuilder.authParameter(isAuthRequired: Boolean) = Unit
+
+	internal fun HttpRequestBuilder.setApiKey() {
+		parameter("api_key", CoreHelper.apiKey)
+	}
 
 	internal fun HttpRequestBuilder.addParameter(key: String, value: Any?): Unit =
 		value?.let {
