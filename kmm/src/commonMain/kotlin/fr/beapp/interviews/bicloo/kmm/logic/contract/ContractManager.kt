@@ -27,7 +27,7 @@ internal class ContractManager(
 				}
 			}
 		}
-		.withStrategy(StrategyType.CACHE_THEN_ASYNC)
+		.withStrategy(StrategyType.JUST_ASYNC)
 		.withTtl(CacheManager.StrategyBuilder.TTL_MONTH)
 		.withSerializer(ListSerializer(ContractEntity.serializer()))
 		.execute()

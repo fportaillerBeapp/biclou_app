@@ -3,22 +3,36 @@ package fr.beapp.interviews.bicloo.kmm.logic.station.entity
 import kotlinx.serialization.Serializable
 
 @Serializable
-class StationEntity(
+data class StationEntity(
 	val address: String,
-	val contractName: String,
-	val lastUpdate: String,
-	val mainStands: StandEntity,
+	val contractName: String?,
+	val lastUpdate: String?,
+	val mainStands: StandEntity?,
 	val name: String,
 	val number: Int,
-	val overflow: Boolean,
+	val overflow: OverflowEnum,
 	val overflowStands: StandEntity?,
-	val position: PositionEntity,
-	val status: Status,
-	val totalStands: StandEntity
+	val position: PositionEntity?,
+	val status: StatusEnum,
+	val totalStands: StandEntity?
 ) {
-	enum class Status {
+	enum class StatusEnum {
 		OPEN,
 		CLOSED,
 		UNKNOWN
+	}
+
+	enum class OverflowEnum {
+		NO_OVERFLOW,
+		OVERFLOW,
+		UNKNOWN;
+
+		companion object {
+			fun from(boolean: Boolean?): OverflowEnum = when (boolean) {
+				true -> OVERFLOW
+				false -> NO_OVERFLOW
+				else -> UNKNOWN
+			}
+		}
 	}
 }

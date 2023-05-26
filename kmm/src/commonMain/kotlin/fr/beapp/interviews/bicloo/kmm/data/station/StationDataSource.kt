@@ -1,6 +1,5 @@
 package fr.beapp.interviews.bicloo.kmm.data.station
 
-import fr.beapp.interviews.bicloo.kmm.core.CoreHelper
 import fr.beapp.interviews.bicloo.kmm.core.rest.RestClient
 import kotlinx.serialization.builtins.ListSerializer
 
@@ -10,11 +9,11 @@ internal class StationDataSource(private val restClient: RestClient) {
 		private const val KEY_CONTRACT_NAME = "contract"
 	}
 
-	private val baseUrl = "${CoreHelper.environmentInfo.urlHost}/stations"
+	private val basePath = "/stations"
 
 	suspend fun getStationsOfContract(contractName: String): List<StationDTO> {
 		return restClient.get(
-			path = baseUrl,
+			path = basePath,
 			params = mapOf(KEY_CONTRACT_NAME to contractName),
 			serializer = ListSerializer(StationDTO.serializer()),
 			isAuthRequired = false,
@@ -23,7 +22,7 @@ internal class StationDataSource(private val restClient: RestClient) {
 
 	suspend fun getStationDetails(number: Int, contractName: String): StationDTO? {
 		return restClient.get(
-			path = "$baseUrl/$number",
+			path = "$basePath/$number",
 			params = mapOf(KEY_CONTRACT_NAME to contractName),
 			serializer = StationDTO.serializer(),
 			isAuthRequired = false,

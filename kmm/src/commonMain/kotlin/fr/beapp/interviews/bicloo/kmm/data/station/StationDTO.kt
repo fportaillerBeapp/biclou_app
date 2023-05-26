@@ -20,34 +20,33 @@ internal data class StationDTO(
 	val status: String? = null,
 	val totalStands: StandDTO? = null
 ) : DTO<StationEntity> {
-	override fun toEntity(): StationEntity = if (
+
+
+	fun toEntity(contractName: String?) = if (
 		address.isNullOrBlank() ||
 		position == null ||
-		contractName.isNullOrBlank() ||
-		lastUpdate.isNullOrBlank() ||
-		mainStands == null ||
 		name.isNullOrBlank() ||
 		number == null ||
-		overflow == null ||
-		status.isNullOrBlank() ||
-		totalStands == null
+		status.isNullOrBlank()
 	) throw DataIntegrityException(this)
 	else StationEntity(
 		address = address,
 		contractName = contractName,
 		lastUpdate = lastUpdate,
-		mainStands = mainStands.toEntity(),
+		mainStands = mainStands?.toEntity(),
 		name = name,
 		number = number,
-		overflow = overflow,
+		overflow = StationEntity.OverflowEnum.from(overflow),
 		overflowStands = overflowStands?.toEntity(),
-		position = position.toEntity(),
+		position = if (position.latitude == null && position.longitude == null) null else position.toEntity(),
 		status = try {
-			StationEntity.Status.valueOf(status.uppercase())
+			StationEntity.StatusEnum.valueOf(status.uppercase())
 		} catch (throwable: Throwable) {
 			SharedLogger.warn("Unknown station status: $status", throwable)
-			StationEntity.Status.UNKNOWN
+			StationEntity.StatusEnum.UNKNOWN
 		},
-		totalStands = totalStands.toEntity()
+		totalStands = totalStands?.toEntity()
 	)
+
+	override fun toEntity(): StationEntity = toEntity(contractName = null)
 }

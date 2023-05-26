@@ -7,7 +7,7 @@ plugins {
 version = "1.0.0"
 
 kotlin {
-	apply(from = "./versions.gradle.kts")
+	apply(from = "../versions.gradle.kts")
 	val coroutineVersion: String by extra
 	val kodeinVersion: String by extra
 	val serializationVersion: String by extra

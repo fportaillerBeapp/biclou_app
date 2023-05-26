@@ -2,7 +2,6 @@ package fr.beapp.interviews.bicloo.kmm.core.rest
 
 import fr.beapp.interviews.bicloo.kmm.core.CoreHelper
 import fr.beapp.interviews.bicloo.kmm.core.di.json
-import fr.beapp.interviews.bicloo.kmm.data.ResultDTO
 import fr.beapp.interviews.bicloo.kmm.data.exception.DataIntegrityException
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
@@ -28,12 +27,14 @@ internal class RestClient(val client: HttpClient) {
 
 	val urlHost = CoreHelper.environmentInfo.urlHost
 
-	suspend inline fun <reified T> getWithStatus(
+
+	suspend inline fun <reified T> get(
 		path: String,
 		params: Map<String, Any?> = emptyMap(),
 		isAuthRequired: Boolean,
 		serializer: KSerializer<T>,
-	): ResultDTO<T> {
+	): T {
+
 		val response = client.get {
 			headers()
 			url {
@@ -45,16 +46,7 @@ internal class RestClient(val client: HttpClient) {
 				setApiKey()
 			}
 		}
-		return json.decodeFromString(ResultDTO.serializer(serializer), response.bodyAsText())
-	}
-
-	suspend inline fun <reified T> get(
-		path: String,
-		params: Map<String, Any?> = emptyMap(),
-		isAuthRequired: Boolean,
-		serializer: KSerializer<T>,
-	): T {
-		return getWithStatus(path, params, isAuthRequired, serializer).getResponseData()
+		return json.decodeFromString(serializer, response.bodyAsText())
 	}
 
 	suspend inline fun <reified T> get(
@@ -64,39 +56,10 @@ internal class RestClient(val client: HttpClient) {
 		isAuthRequired: Boolean,
 		serializer: KSerializer<T>,
 	): T {
-		return get(
+		return this.get(
 			path, params, isAuthRequired,
 			serializer = MapSerializer(String.serializer(), JsonElement.serializer())
 		)[key]?.let { json.decodeFromJsonElement(serializer, it) } ?: throw DataIntegrityException("Missing key $key")
-	}
-
-	suspend inline fun <reified U> postWithStatus(
-		path: String,
-		params: Map<String, String?> = emptyMap(),
-		isAuthRequired: Boolean,
-		serializer: KSerializer<U>,
-	) = postWithStatus<Any, U>(path, params, content = null, isAuthRequired = isAuthRequired, serializer = serializer)
-
-	suspend inline fun <reified T, reified U> postWithStatus(
-		path: String,
-		params: Map<String, String?> = emptyMap(),
-		content: T?,
-		isAuthRequired: Boolean,
-		serializer: KSerializer<U>
-	): ResultDTO<U> {
-		val response = client.post {
-			headers()
-			url {
-				protocol = URLProtocol.HTTPS
-				host = urlHost
-				encodedPath = path
-				params.forEach { param -> param.value?.let { addParameter(param.key, it) } }
-				authParameter(isAuthRequired)
-				setApiKey()
-			}
-			setBody(content ?: EmptyContent)
-		}
-		return json.decodeFromString(ResultDTO.serializer(serializer), response.bodyAsText())
 	}
 
 	suspend inline fun <reified U> post(
@@ -113,7 +76,20 @@ internal class RestClient(val client: HttpClient) {
 		isAuthRequired: Boolean,
 		serializer: KSerializer<U>,
 	): U {
-		return postWithStatus(path, params, content, isAuthRequired, serializer).getResponseData()
+
+		val response = client.post {
+			headers()
+			url {
+				protocol = URLProtocol.HTTPS
+				host = urlHost
+				encodedPath = path
+				params.forEach { param -> param.value?.let { addParameter(param.key, it) } }
+				authParameter(isAuthRequired)
+				setApiKey()
+			}
+			setBody(content ?: EmptyContent)
+		}
+		return json.decodeFromString(serializer, response.bodyAsText())
 	}
 
 	suspend inline fun <reified U> post(
@@ -156,7 +132,7 @@ internal class RestClient(val client: HttpClient) {
 			}
 			setBody(content ?: EmptyContent)
 		}
-		return json.decodeFromString(ResultDTO.serializer(serializer), response.bodyAsText()).getResponseData()
+		return json.decodeFromString(serializer, response.bodyAsText())
 	}
 
 	suspend inline fun <reified T, reified U> delete(
@@ -178,7 +154,7 @@ internal class RestClient(val client: HttpClient) {
 			}
 			setBody(content ?: EmptyContent)
 		}
-		return json.decodeFromString(ResultDTO.serializer(serializer), response.bodyAsText()).getResponseData()
+		return json.decodeFromString(serializer, response.bodyAsText())
 	}
 
 	internal fun HttpRequestBuilder.headers() {
@@ -189,7 +165,7 @@ internal class RestClient(val client: HttpClient) {
 	internal fun HttpRequestBuilder.authParameter(isAuthRequired: Boolean) = Unit
 
 	internal fun HttpRequestBuilder.setApiKey() {
-		parameter("api_key", CoreHelper.apiKey)
+		parameter("apiKey", CoreHelper.apiKey)
 	}
 
 	internal fun HttpRequestBuilder.addParameter(key: String, value: Any?): Unit =

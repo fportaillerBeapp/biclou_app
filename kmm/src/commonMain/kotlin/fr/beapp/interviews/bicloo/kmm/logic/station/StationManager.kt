@@ -2,6 +2,7 @@ package fr.beapp.interviews.bicloo.kmm.logic.station
 
 import fr.beapp.interviews.bicloo.kmm.core.log.SharedLogger
 import fr.beapp.interviews.bicloo.kmm.core.storage.cache.CacheManager
+import fr.beapp.interviews.bicloo.kmm.core.storage.cache.strategy.StrategyType
 import fr.beapp.interviews.bicloo.kmm.data.station.StationDataSource
 import fr.beapp.interviews.bicloo.kmm.logic.station.entity.StationEntity
 import kotlinx.coroutines.flow.Flow
@@ -20,15 +21,17 @@ internal class StationManager(
 	fun getStationsOfContract(contractName: String): Flow<List<StationEntity>> = cacheManager
 		.from<List<StationEntity>>("$KEY_STATIONS$contractName")
 		.withAsync {
-			stationDataSource.getStationsOfContract(contractName).mapNotNull { stationDTO ->
+			val stations = stationDataSource.getStationsOfContract(contractName).mapNotNull { stationDTO ->
 				try {
-					stationDTO.toEntity()
+					stationDTO.toEntity(contractName)
 				} catch (throwable: Throwable) {
 					SharedLogger.warn("Fail to parse station (skipped)", throwable)
 					null
 				}
 			}
+			stations
 		}
+		.withStrategy(StrategyType.ASYNC_OR_CACHE)
 		.withSerializer(ListSerializer(StationEntity.serializer()))
 		.withTtl(CacheManager.StrategyBuilder.TTL_HOUR)
 		.execute()

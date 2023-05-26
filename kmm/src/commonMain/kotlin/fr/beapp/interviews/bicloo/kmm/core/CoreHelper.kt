@@ -5,10 +5,11 @@ object CoreHelper {
 	lateinit var environmentInfo: EnvironmentInfo
 	lateinit var apiKey: String
 
-	fun String.initCore(
+	fun initCore(
 		environmentInfo: EnvironmentInfo,
 		apiKey: String
 	) {
+		CoreHelper.apiKey = apiKey
 		CoreHelper.environmentInfo = environmentInfo
 	}
 }
