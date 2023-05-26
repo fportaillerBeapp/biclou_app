@@ -6,7 +6,7 @@ import java.util.Properties
 plugins {
 	id("com.android.application")
 	kotlin("android")
-
+	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 val (versionMajor, versionMinor, versionPatch, versionBuild) = listOf(1, 0, 0, 0)
