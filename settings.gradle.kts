@@ -8,3 +8,4 @@ pluginManagement {
 
 rootProject.name = "Bicloo App"
 include(":app")
+include(":kmm")
