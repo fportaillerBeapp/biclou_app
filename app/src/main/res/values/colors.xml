@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="primary">@color/highlight_darkest</color>
+    <color name="onPrimary">@color/white</color>
+    <color name="background">@color/white</color>
+    <color name="onBackground">@color/black</color>
+    <color name="secondary">@color/highlight_lightest</color>
+    <color name="onSecondary">@color/primary</color>
+
+    <color name="disabled">@color/neutral_light_dark</color>
+
+    <color name="lightBackground">@color/neutral_light_light</color>
+    <color name="onLightBackground">@color/black</color>
+
+    <color name="highlight_darkest">#F88F28</color>
+    <color name="highlight_dark">#FFA553</color>
+    <color name="highlight_medium">#FFBC7E</color>
+    <color name="highlight_light">#FFDDBF</color>
+    <color name="highlight_lightest">#FFF4EA</color>
+
+    <color name="neutral_light_darkest">#C5C6CC</color>
+    <color name="neutral_light_dark">#D4D6DD</color>
+    <color name="neutral_light_medium">#E8E9F1</color>
+    <color name="neutral_light_light">#F8F9EE</color>
+    <color name="neutral_light_lightest">@color/white</color>
+
+    <color name="neutral_dark_darkest">#1F2024</color>
+    <color name="neutral_dark_dark">#2F3036</color>
+    <color name="neutral_dark_medium">#494A50</color>
+    <color name="neutral_dark_light">#71727A</color>
+    <color name="neutral_dark_lightest">#8F9098</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

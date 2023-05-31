@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BiclooTextView" parent="Widget.MaterialComponents.TextView">
+        <item name="android:fontFamily">@font/inter_font_family</item>
+        <item name="android:textColor">@color/onBackground</item>
+    </style>
+    <style name="BiclooButton" parent="Widget.MaterialComponents.TextView">
+        <item name="android:fontFamily">@font/inter_font_family</item>
+        <item name="android:textColor">@color/onPrimary</item>
+    </style>
+</resources>
