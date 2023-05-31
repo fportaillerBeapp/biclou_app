@@ -4,13 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/top_search_bar"
+        android:id="@+id/mainAcitvityTopSearchBar"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/topBarBarrier"
+        app:constraint_referenced_ids="mainAcitvityTopSearchBar"
+        app:barrierDirection="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/mainActivityContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:name="fr.beapp.interviews.bicloo.andro.ui.map.MapFragment"
         app:layout_constraintBottom_toTopOf="@id/mainActivityTabBar"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/topBarBarrier" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mainActivityTabBar"

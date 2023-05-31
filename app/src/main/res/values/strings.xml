@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Biclou</string>
+
+
+    <!--  Top Search bar  -->
+    <string name="topSearchBar_hint">Rechercher</string>
+    <string name="topSearchBar_filter">Filtres</string>
 </resources>

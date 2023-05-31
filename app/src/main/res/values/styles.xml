@@ -5,8 +5,36 @@
         <item name="android:fontFamily">@font/inter_font_family</item>
         <item name="android:textColor">@color/onBackground</item>
     </style>
+
     <style name="BiclooButton" parent="Widget.MaterialComponents.TextView">
         <item name="android:fontFamily">@font/inter_font_family</item>
         <item name="android:textColor">@color/onPrimary</item>
+    </style>
+
+
+    <style name="TopSearchBar" />
+
+    <style name="TopSearchBar.Filter" />
+
+    <style name="TopSearchBar.Filter.MainChip" parent="ShapeAppearanceOverlay.Material3.Chip">
+        <item name="android:fontFamily">@font/inter_font_family</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.05</item>
+        <item name="chipBackgroundColor">@color/primary</item>
+        <item name="chipCornerRadius">@dimen/radius_large</item>
+        <item name="chipStrokeColor">@color/primary</item>
+        <item name="android:textColor">@color/onPrimary</item>
+        <item name="chipIcon">@drawable/ic_filter</item>
+    </style>
+
+    <style name="TopSearchBar.Filter.Chip" parent="ShapeAppearanceOverlay.Material3.Chip">
+        <item name="android:fontFamily">@font/inter_font_family</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="chipBackgroundColor">@color/lightBackground</item>
+        <item name="android:letterSpacing">0.05</item>
+        <item name="chipCornerRadius">@dimen/radius_large</item>
+        <item name="chipStrokeColor">@color/lightBackground</item>
+        <item name="android:textColor">@color/onLightBackground</item>
+        <item name="chipIcon">@drawable/ic_close</item>
     </style>
 </resources>

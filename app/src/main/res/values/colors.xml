@@ -5,13 +5,13 @@
     <color name="onPrimary">@color/white</color>
     <color name="background">@color/white</color>
     <color name="onBackground">@color/black</color>
-    <color name="secondary">@color/highlight_lightest</color>
-    <color name="onSecondary">@color/primary</color>
+    <color name="secondary">@color/neutral_light_light</color>
+    <color name="onSecondary">@color/black</color>
 
     <color name="disabled">@color/neutral_light_dark</color>
 
-    <color name="lightBackground">@color/neutral_light_light</color>
-    <color name="onLightBackground">@color/black</color>
+    <color name="lightBackground">@color/highlight_lightest</color>
+    <color name="onLightBackground">@color/primary</color>
 
     <color name="highlight_darkest">#F88F28</color>
     <color name="highlight_dark">#FFA553</color>
@@ -22,7 +22,7 @@
     <color name="neutral_light_darkest">#C5C6CC</color>
     <color name="neutral_light_dark">#D4D6DD</color>
     <color name="neutral_light_medium">#E8E9F1</color>
-    <color name="neutral_light_light">#F8F9EE</color>
+    <color name="neutral_light_light">#F8F9FE</color>
     <color name="neutral_light_lightest">@color/white</color>
 
     <color name="neutral_dark_darkest">#1F2024</color>
