@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Biclou</string>
 
-
     <!--  Top Search bar  -->
     <string name="topSearchBar_hint">Rechercher</string>
     <string name="topSearchBar_filter">Filtres</string>
+    <string name="searchFragment_query_label">Résultats</string>
+    <string name="searchFragment_location_label">A proximité</string>
+    <string name="searchFragment_recent_label">Récent</string>
 </resources>

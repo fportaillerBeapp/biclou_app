@@ -23,16 +23,18 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/search_edit_background" />
+            android:background="@drawable/search_edit_background"
+            android:imeOptions="actionSearch"
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/topSearchBarFilterChipGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_small"
-        android:paddingEnd="@dimen/space_small"
-        app:chipSpacing="@dimen/space_small"
+        android:layout_marginTop="@dimen/space_x_small"
+        android:paddingEnd="@dimen/space_x_small"
+        app:chipSpacing="@dimen/space_x_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/topSearchBarSearchBar"
         app:layout_constraintTop_toBottomOf="@id/topSearchBarSearchBar">
@@ -48,7 +50,7 @@
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_small"
+        android:layout_marginTop="@dimen/space_x_small"
         android:orientation="horizontal"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -60,7 +62,7 @@
             android:id="@+id/topSearchBarFitlerList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:chipSpacing="@dimen/space_small"
+            app:chipSpacing="@dimen/space_x_small"
             app:selectionRequired="false"
             app:singleLine="true">
 
