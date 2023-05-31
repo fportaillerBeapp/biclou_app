@@ -8,6 +8,7 @@ import fr.beapp.interviews.bicloo.kmm.logic.station.entity.StationEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -26,6 +27,14 @@ class MainViewModel : ViewModel() {
 	fun loadAllContracts() {
 		viewModelScope.launch {
 			contractPresenter.getContracts().collect(_contracts::emit)
+		}
+	}
+
+	fun loadAllStations() {
+		viewModelScope.launch {
+				stationPresenter.getAllStations().collect {
+					_stations.emit(it)
+				}
 		}
 	}
 

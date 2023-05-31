@@ -11,4 +11,5 @@ class StationPresenter internal constructor(
 	fun getStationsOfContract(contractName: String): Flow<List<StationEntity>> = stationManager.getStationsOfContract(contractName)
 
 	fun getStationDetails(stationNumber: Int, contractName: String): Flow<StationEntity?> = stationManager.getStationDetails(stationNumber, contractName)
+	fun getAllStations(): Flow<List<StationEntity>> = stationManager.getAllStations()
 }

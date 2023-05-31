@@ -133,9 +133,10 @@ dependencies {
 	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
 	implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
 	implementation("androidx.activity:activity-ktx:1.7.2")
+	implementation("androidx.fragment:fragment-ktx:1.5.7")
 
 	// google services
-	implementation("com.google.android.gms:play-services-auth:20.5.0")
+	implementation("com.google.maps.android:maps-utils-ktx:3.4.0")
 
 	// firebase
 	implementation(platform("com.google.firebase:firebase-bom:31.1.1"))

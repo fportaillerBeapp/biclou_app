@@ -15,21 +15,38 @@ internal class StationManager(
 ) {
 
 	companion object {
-		private const val KEY_STATIONS = "StationManager.KEY_STATIONS_OF_"
+		private const val KEY_STATIONS_OF = "StationManager.KEY_STATIONS_OF_"
+		private const val KEY_ALL_STATIONS = "StationManager.KEY_ALL_STATIONS"
 	}
 
-	fun getStationsOfContract(contractName: String): Flow<List<StationEntity>> = cacheManager
-		.from<List<StationEntity>>("$KEY_STATIONS$contractName")
+	fun getAllStations(): Flow<List<StationEntity>> = cacheManager
+		.from<List<StationEntity>>(KEY_ALL_STATIONS)
 		.withAsync {
-			val stations = stationDataSource.getStationsOfContract(contractName).mapNotNull { stationDTO ->
+			stationDataSource.getStations().mapNotNull { stationDTO ->
 				try {
-					stationDTO.toEntity(contractName)
+					stationDTO.toEntity()
 				} catch (throwable: Throwable) {
-					SharedLogger.warn("Fail to parse station (skipped)", throwable)
+					SharedLogger.warn("Fail to parse station from all stations (skipped)", throwable)
 					null
 				}
 			}
-			stations
+		}
+		.withStrategy(StrategyType.ASYNC_OR_CACHE)
+		.withTtl(CacheManager.StrategyBuilder.TTL_HOUR)
+		.withSerializer(ListSerializer(StationEntity.serializer()))
+		.execute()
+
+	fun getStationsOfContract(contractName: String): Flow<List<StationEntity>> = cacheManager
+		.from<List<StationEntity>>("$KEY_STATIONS_OF$contractName")
+		.withAsync {
+			stationDataSource.getStationsOfContract(contractName).mapNotNull { stationDTO ->
+				try {
+					stationDTO.toEntity(contractName)
+				} catch (throwable: Throwable) {
+					SharedLogger.warn("Fail to parse station from contract $contractName (skipped)", throwable)
+					null
+				}
+			}
 		}
 		.withStrategy(StrategyType.ASYNC_OR_CACHE)
 		.withSerializer(ListSerializer(StationEntity.serializer()))
@@ -41,7 +58,7 @@ internal class StationManager(
 		val result = try {
 			stationDataSource.getStationDetails(number, contractName)?.toEntity()
 		} catch (throwable: Throwable) {
-			SharedLogger.warn("Fail to parse station (skipped)", throwable)
+			SharedLogger.warn("Fail to parse station from number $number and contract $contractName (skipped)", throwable)
 			null
 		}
 		emit(result)

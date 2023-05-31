@@ -11,6 +11,12 @@ internal class StationDataSource(private val restClient: RestClient) {
 
 	private val basePath = "/stations"
 
+	suspend fun getStations(): List<StationDTO> = restClient.get(
+		path = basePath,
+		serializer = ListSerializer(StationDTO.serializer()),
+		isAuthRequired = false,
+	)
+
 	suspend fun getStationsOfContract(contractName: String): List<StationDTO> {
 		return restClient.get(
 			path = basePath,
