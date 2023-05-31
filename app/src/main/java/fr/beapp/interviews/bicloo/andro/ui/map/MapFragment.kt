@@ -5,25 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.MarkerOptions
 import fr.beapp.interviews.bicloo.andro.databinding.MapFragmentBinding
 import fr.beapp.interviews.bicloo.andro.ui.MainViewModel
 import fr.beapp.interviews.bicloo.andro.ui.shared.BaseFragment
-import fr.beapp.interviews.bicloo.andro.utils.toLatLong
+import fr.beapp.interviews.bicloo.andro.ui.utils.StationCluster
 import fr.beapp.interviews.bicloo.kmm.logic.station.entity.StationEntity
 import kotlinx.coroutines.launch
 
 class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapReadyCallback {
 
 	private lateinit var map: GoogleMap
+	private lateinit var cluster: StationCluster
 	private val viewModel: MainViewModel by activityViewModels()
-	private val mapViewModel: MapViewModel by viewModels()
 
 	override fun buildViewBinding(inflater: LayoutInflater, container: ViewGroup?): MapFragmentBinding {
 		return MapFragmentBinding.inflate(inflater, container, false)
@@ -36,6 +34,9 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapReadyCallback {
 
 	override fun onMapReady(googleMap: GoogleMap) {
 		map = googleMap
+		cluster = StationCluster(requireContext(), map)
+		map.setOnCameraIdleListener(cluster)
+		map.setOnMarkerClickListener(cluster)
 		lifecycleScope.launch {
 			whenResumed {
 				viewModel.stations.collect(::onStationsUpdate)
@@ -44,11 +45,13 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapReadyCallback {
 	}
 
 	private fun onStationsUpdate(stations: List<StationEntity>) {
-		val markers = stations.filter { it.position != null }.mapNotNull { station ->
-			val marker = MarkerOptions().position(station.position!!.toLatLong())
-				.title(station.name)
-			map.addMarker(marker)
-		}
-		mapViewModel.saveMarkers(markers)
+		cluster.clearStations()
+		cluster.addStations(stations.filter { it.position != null })
+	}
+
+	override fun onDestroyView() {
+		super.onDestroyView()
+		cluster.clearStations()
+		map.clear()
 	}
 }
