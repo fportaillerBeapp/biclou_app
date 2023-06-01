@@ -1,13 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center|bottom"
     android:background="@color/secondary"
-    app:cardCornerRadius="@dimen/radius_large"> <!-- TODO replace with wrap content -->
+    app:cardCornerRadius="@dimen/radius_large">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/stationName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_medium"
+            android:layout_marginTop="@dimen/space_medium"
+            android:fontFamily="@font/inter_extra_bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="@dimen/text_medium"
+            tools:text="Station de l'Éléphant"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/favoriteIcon"
+            android:layout_width="@dimen/icon_container_small"
+            android:layout_height="@dimen/icon_container_small"
+            android:background="@drawable/circle_primary"
+            app:icon="@drawable/ic_favorite_outlined"
+            app:iconSize="@dimen/icon_small"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            android:layout_marginEnd="@dimen/space_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/stationName"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/stationAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            style="@style/BiclooSmallTextView"
+            android:fontFamily="@font/inter_light"
+            app:layout_constraintStart_toStartOf="@id/stationName"
+            app:layout_constraintTop_toBottomOf="@id/stationName"
+            tools:text="10 Bd Léon Bureau"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/stationAvailability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_medium"
+            style="@style/BiclooSmallTextView"
+            app:layout_constraintStart_toStartOf="@id/stationName"
+            app:layout_constraintTop_toBottomOf="@id/stationAddress"
+            tools:text="Disponible"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/itinerary_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_medium"
+            android:text="@string/itinerary_label"
+            style="@style/BiclooSmallTextView"
+            android:fontFamily="@font/inter_bold"
+            app:layout_constraintStart_toStartOf="@id/stationName"
+            app:layout_constraintTop_toBottomOf="@id/stationAvailability"
+            />
 
 
-    <!--  TODO  -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/fromButton"
+            style="@style/OutlinedBiclooButton"
+            android:layout_width="0dp"
+            android:layout_margin="@dimen/space_medium"
+            android:layout_height="wrap_content"
+            android:text="@string/from_label_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itinerary_label"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toStartOf="@id/goToButton"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/goToButton"
+            style="@style/BiclooButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_medium"
+            android:text="@string/goTo_label_button"
+            app:layout_constraintBottom_toBottomOf="@id/fromButton"
+            app:layout_constraintTop_toTopOf="@id/fromButton"
+            app:layout_constraintStart_toEndOf="@id/fromButton"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </com.google.android.material.card.MaterialCardView>

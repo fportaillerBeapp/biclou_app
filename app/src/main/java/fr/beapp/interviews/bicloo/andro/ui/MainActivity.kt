@@ -19,6 +19,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
+import fr.beapp.interviews.bicloo.andro.R
 import fr.beapp.interviews.bicloo.andro.databinding.MainActivityBinding
 import fr.beapp.interviews.bicloo.andro.ui.utils.hasForegroundLocationPermission
 import fr.beapp.interviews.bicloo.andro.ui.utils.hideKeyboard
@@ -111,7 +112,19 @@ class MainActivity : AppCompatActivity() {
 		if (stationEntity != null) binding.mainActivitySearchFragment.isVisible = false
 		binding.mainActivityStationDetailsContainer.isVisible = stationEntity != null
 		if (stationEntity == null) return
-		//TODO bind station Details view here (binding.mainActivityStationDetails....)
+		binding.mainActivityStationDetails.stationName.text = stationEntity.name
+		binding.mainActivityStationDetails.stationAddress.text = stationEntity.address
+		binding.mainActivityStationDetails.stationAvailability.text =
+			when (stationEntity.status) {
+				StationEntity.StatusEnum.OPEN -> getString(R.string.station_opened)
+				StationEntity.StatusEnum.CLOSED -> getString(R.string.station_closed)
+				else -> getString(R.string.station_status_unknown)
+			}
+		binding.mainActivityStationDetails.favoriteIcon.setOnClickListener {
+			// TODO
+			// Add into favorites station
+			//binding.mainActivityStationDetails.favoriteIcon.icon = if(isFavorite) getDrawable(R.drawable.ic_favorite_filled)  else getDrawable(R.drawable.ic_favorite_outlined)
+		}
 		//TODO center map on station location
 		//TODO clear itineraries
 	}
