@@ -1,51 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/mainAcitvityTopSearchBar"
-        layout="@layout/top_search_bar" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/topBarBarrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="mainAcitvityTopSearchBar" />
-
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/mainActivityContainer"
+        android:id="@+id/mainActivityFragmentContainer"
         android:name="fr.beapp.interviews.bicloo.andro.ui.map.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/mainActivityTabBar"
-        app:layout_constraintTop_toBottomOf="@id/topBarBarrier" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mainActivityTabBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent" />
-
-    <FrameLayout
-        android:id="@+id/mainActivityStationDetailsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/space_medium"
-        android:paddingBottom="@dimen/space_small"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/mainActivityTabBar"
-        app:layout_constraintTop_toBottomOf="@id/topBarBarrier"
-        app:layout_constraintVertical_bias="1"
-        tools:visibility="visible">
-
-        <include
-            android:id="@+id/mainActivityStationDetails"
-            layout="@layout/station_details_view" />
-    </FrameLayout>
 
 
     <androidx.fragment.app.FragmentContainerView
@@ -53,6 +25,7 @@
         android:name="fr.beapp.interviews.bicloo.andro.ui.search.SearchFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="20dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent" />
 

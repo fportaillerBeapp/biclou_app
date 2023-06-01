@@ -23,6 +23,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            tools:text="Machine de L'île"
+            android:textColor="@color/onBackground"
             android:background="@drawable/search_edit_background"
             android:imeOptions="actionSearch"
             android:inputType="text" />

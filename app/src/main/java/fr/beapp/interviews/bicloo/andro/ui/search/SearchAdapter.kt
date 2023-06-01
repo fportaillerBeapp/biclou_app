@@ -9,6 +9,7 @@ import fr.beapp.interviews.bicloo.andro.ui.search.item.HeaderSearchViewHolder
 import fr.beapp.interviews.bicloo.andro.ui.search.item.SearchItem
 import fr.beapp.interviews.bicloo.andro.ui.search.item.SearchViewHolder
 import fr.beapp.interviews.bicloo.andro.ui.search.item.StationSearchViewHolder
+import fr.beapp.interviews.bicloo.andro.ui.search.state.SearchState
 import fr.beapp.interviews.bicloo.kmm.logic.station.entity.StationEntity
 
 class SearchAdapter(
@@ -22,10 +23,10 @@ class SearchAdapter(
 
 	private val items = mutableListOf<SearchItem>()
 
-	fun replaceAll(groups: Map<Int, List<StationEntity>>) {
+	fun replaceAll(groups: Map<SearchState.SearchType, List<StationEntity>>) {
 		items.clear()
-		groups.forEach { (header, stations) ->
-			items.add(SearchItem.Header(header))
+		groups.forEach { (group, stations) ->
+			items.add(SearchItem.Header(group.title))
 			items.addAll(stations.map { SearchItem.Station(it) })
 		}
 		notifyDataSetChanged()

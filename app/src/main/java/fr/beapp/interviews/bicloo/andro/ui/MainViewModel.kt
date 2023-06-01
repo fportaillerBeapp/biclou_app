@@ -3,6 +3,7 @@ package fr.beapp.interviews.bicloo.andro.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import fr.beapp.interviews.bicloo.andro.ui.search.state.SearchState
 import fr.beapp.interviews.bicloo.andro.utils.toLatLong
 import fr.beapp.interviews.bicloo.andro.utils.toRadialBounds
 import fr.beapp.interviews.bicloo.kmm.ServiceLocator
@@ -12,6 +13,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -27,8 +29,8 @@ class MainViewModel : ViewModel() {
 	val contracts: StateFlow<List<ContractEntity>>
 		get() = _contracts.asStateFlow()
 
-	private val _searchResult: MutableStateFlow<Map<Int, List<StationEntity>>> = MutableStateFlow(emptyMap())
-	val searchResult: StateFlow<Map<Int, List<StationEntity>>>
+	private val _searchResult: MutableStateFlow<SearchState> = MutableStateFlow(SearchState.Empty)
+	val searchResult: StateFlow<SearchState>
 		get() = _searchResult.asStateFlow()
 
 	private val _stationDetail: MutableStateFlow<StationEntity?> = MutableStateFlow(null)
@@ -67,19 +69,23 @@ class MainViewModel : ViewModel() {
 
 		viewModelScope.launch {
 			val currentLocation = _location.value
-			val querySearch = if (query.length > 3) async { SearchType.QUERY to searchStationByQuery(query) } else null
-			val locationSearch = if (currentLocation != null) async { SearchType.LOCATION to searchStationByLocation(currentLocation) } else null
-			val recentSearch = async { SearchType.RECENT to searchStationByRecent(query) }
+			val querySearch = if (query.length > 2) async { SearchState.SearchType.QUERY to searchStationByQuery(query) } else null
+			val locationSearch = if (currentLocation != null) async { SearchState.SearchType.LOCATION to searchStationByLocation(currentLocation) } else null
+			val recentSearch = async { SearchState.SearchType.RECENT to searchStationByRecent(query) }
 
-			listOfNotNull(locationSearch, recentSearch, querySearch).map { it.await() }
-				.fold(emptyMap<Int, List<StationEntity>>()) { acc, (type, stations) ->
+			val resultGroups = listOfNotNull(
+				locationSearch,
+				recentSearch,
+				querySearch
+			)
+				.map { it.await() }
+				.fold(emptyMap<SearchState.SearchType, List<StationEntity>>()) { acc, (type, stations) ->
 					acc.toMutableMap().apply {
-						this[type.ordinal] = stations
+						this[type] = stations
 					}
 				}
-				.also {
-					_searchResult.emit(it)
-				}
+
+			_searchResult.update { SearchState.Result(query, currentLocation, resultGroups) }
 		}
 	}
 
@@ -118,9 +124,5 @@ class MainViewModel : ViewModel() {
 
 	fun requestLocationPermission() {
 		_shouldRequestLocationPermission.value = true
-	}
-
-	enum class SearchType {
-		LOCATION, QUERY, RECENT
 	}
 }
