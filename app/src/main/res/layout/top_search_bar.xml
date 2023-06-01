@@ -28,63 +28,16 @@
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/topSearchBarFilterChipGroup"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/topSearchBarEnableLocation"
+        style="@style/LocationButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_x_small"
-        android:paddingEnd="@dimen/space_x_small"
-        app:chipSpacing="@dimen/space_x_small"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/topSearchBarSearchBar"
-        app:layout_constraintTop_toBottomOf="@id/topSearchBarSearchBar">
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/topSearchBarTabLayoutFilter"
-            style="@style/TopSearchBar.Filter.MainChip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/topSearchBar_filter" />
-    </com.google.android.material.chip.ChipGroup>
-
-    <ScrollView
-        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_x_small"
-        android:orientation="horizontal"
-        android:scrollbars="none"
+        android:text="@string/topSearchBar_enable_location"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/topSearchBarFilterChipGroup"
-        app:layout_constraintTop_toBottomOf="@id/topSearchBarSearchBar">
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/topSearchBarFitlerList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:chipSpacing="@dimen/space_x_small"
-            app:selectionRequired="false"
-            app:singleLine="true">
-
-            <com.google.android.material.chip.Chip
-                style="@style/TopSearchBar.Filter.Chip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Filtres" />
-
-            <com.google.android.material.chip.Chip
-                style="@style/TopSearchBar.Filter.Chip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Filtres" />
-
-            <com.google.android.material.chip.Chip
-                style="@style/TopSearchBar.Filter.Chip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Filtres" />
-        </com.google.android.material.chip.ChipGroup>
-
-    </ScrollView>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topSearchBarSearchBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

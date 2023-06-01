@@ -3,8 +3,8 @@ package fr.beapp.interviews.bicloo.andro.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import fr.beapp.interviews.bicloo.andro.utils.toLatLong
+import fr.beapp.interviews.bicloo.andro.utils.toRadialBounds
 import fr.beapp.interviews.bicloo.kmm.ServiceLocator
 import fr.beapp.interviews.bicloo.kmm.logic.contract.entity.ContractEntity
 import fr.beapp.interviews.bicloo.kmm.logic.station.entity.StationEntity
@@ -36,6 +36,12 @@ class MainViewModel : ViewModel() {
 		get() = _stationDetail.asStateFlow()
 
 	private val _location: MutableStateFlow<LatLng?> = MutableStateFlow(null)
+	val location: StateFlow<LatLng?>
+		get() = _location.asStateFlow()
+
+	private val _shouldRequestLocationPermission: MutableStateFlow<Boolean> = MutableStateFlow(false)
+	val shouldRequestLocationPermission: StateFlow<Boolean>
+		get() = _shouldRequestLocationPermission.asStateFlow()
 
 	fun loadAllContracts() {
 		viewModelScope.launch {
@@ -79,13 +85,10 @@ class MainViewModel : ViewModel() {
 
 
 	private fun searchStationByLocation(latLng: LatLng): List<StationEntity> {
-		val searchZone = LatLngBounds(
-			LatLng(latLng.latitude - 0.01, latLng.longitude - 0.01),
-			LatLng(latLng.latitude + 0.01, latLng.longitude + 0.01)
-		)
+		val searchZone = latLng.toRadialBounds()
 		return stations.value.filter { stationEntity ->
 			stationEntity.position?.toLatLong()?.let { searchZone.contains(it) } == true
-		}
+		}.take(3) //TODO extract magic number to constant and explicit it
 	}
 
 	private fun searchStationByQuery(query: String): List<StationEntity> {
@@ -107,6 +110,14 @@ class MainViewModel : ViewModel() {
 
 	fun closeStationDetail() {
 		_stationDetail.value = null
+	}
+
+	fun setLocation(latLng: LatLng?) {
+		_location.value = latLng
+	}
+
+	fun requestLocationPermission() {
+		_shouldRequestLocationPermission.value = true
 	}
 
 	enum class SearchType {

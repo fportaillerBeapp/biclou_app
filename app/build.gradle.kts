@@ -44,7 +44,12 @@ android {
 	}
 
 	signingConfigs {
-
+		create("release") {
+			storeFile = file("../upload.keystore")
+			storePassword = ""
+			keyAlias = "release"
+			keyPassword = ""
+		}
 	}
 
 	flavorDimensions.add("env")
@@ -94,6 +99,7 @@ android {
 		getByName("release") {
 			isMinifyEnabled = true
 			proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+			signingConfig = signingConfigs.getByName("release")
 		}
 	}
 
@@ -137,6 +143,13 @@ dependencies {
 
 	// google services
 	implementation("com.google.maps.android:maps-utils-ktx:3.4.0")
+	// For google map auto place complete search
+	implementation("com.google.android.libraries.places:places:3.1.0")
+	implementation("com.google.android.gms:play-services-maps:18.1.0")
+
+	// To get device location
+	implementation("com.google.android.gms:play-services-location:19.0.1")
+	implementation("com.patloew.rxlocation:rxlocation:1.0.5")
 
 	// firebase
 	implementation(platform("com.google.firebase:firebase-bom:31.1.1"))

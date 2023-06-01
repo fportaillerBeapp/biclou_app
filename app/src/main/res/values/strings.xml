@@ -7,4 +7,6 @@
     <string name="searchFragment_query_label">Résultats</string>
     <string name="searchFragment_location_label">A proximité</string>
     <string name="searchFragment_recent_label">Récent</string>
+    <string name="topSearchBar_enable_location">Me localiser</string>
+    <string name="searchFragment_enable_location">Utiliser ma localisation</string>
 </resources>
