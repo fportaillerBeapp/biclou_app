@@ -8,11 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.OnMapsSdkInitializedCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -47,7 +43,12 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCall
 		map = googleMap
 		cluster = StationCluster(requireContext(), map)
 		map.setOnCameraIdleListener(cluster)
-		map.setOnMarkerClickListener(cluster)
+		cluster.setOnClusterItemClickListener {
+			val station = it.station
+			viewModel.onStationClicked(station)
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(it.position, 16F))
+			true
+		}
 		lifecycleScope.launch {
 			whenResumed {
 				viewModel.stations.collect(::onStationsUpdate)
