@@ -50,6 +50,13 @@ android {
 			keyAlias = "release"
 			keyPassword = ""
 		}
+
+		getByName("debug") {
+			storeFile = file("../debug.keystore")
+			storePassword = "biclou"
+			keyAlias = "debug"
+			keyPassword = "biclou"
+		}
 	}
 
 	flavorDimensions.add("env")
