@@ -28,6 +28,10 @@ import kotlinx.coroutines.launch
 
 class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCallback, OnMapReadyCallback {
 
+	companion object {
+		fun newInstance() = MapFragment()
+	}
+
 	private lateinit var map: GoogleMap
 	private lateinit var cluster: StationCluster
 	private var userMarker: Marker? = null

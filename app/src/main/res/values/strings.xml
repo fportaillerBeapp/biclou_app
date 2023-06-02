@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Biclou</string>
 
+<!--  Tab bar  -->
+    <string name="mainMenu_map_title">Carte</string>
+    <string name="mainMenu_my_account_title">Mon Compte</string>
+
     <!--  Top Search bar  -->
     <string name="topSearchBar_hint">Rechercher</string>
     <string name="topSearchBar_filter">Filtres</string>

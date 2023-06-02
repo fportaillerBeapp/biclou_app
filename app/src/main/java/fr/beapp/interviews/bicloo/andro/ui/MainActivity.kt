@@ -7,8 +7,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withCreated
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationCallback
@@ -17,8 +20,12 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
+import fr.beapp.interviews.bicloo.andro.R
 import fr.beapp.interviews.bicloo.andro.databinding.MainActivityBinding
+import fr.beapp.interviews.bicloo.andro.ui.favorite.FavoriteFragment
+import fr.beapp.interviews.bicloo.andro.ui.map.MapFragment
 import fr.beapp.interviews.bicloo.andro.ui.search.state.SearchState
+import fr.beapp.interviews.bicloo.andro.ui.shared.location.LocationState
 import fr.beapp.interviews.bicloo.andro.ui.utils.hasForegroundLocationPermission
 import fr.beapp.interviews.bicloo.andro.ui.utils.hasForegroundLocationPermissionDenied
 import fr.beapp.interviews.bicloo.andro.ui.utils.hideKeyboard
@@ -58,14 +65,17 @@ class MainActivity : AppCompatActivity() {
 		binding = MainActivityBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		when{
+		when {
 			hasForegroundLocationPermission() -> {
 				viewModel.setLocationPermissionGranted()
 				listenToLocation()
 			}
+
 			hasForegroundLocationPermissionDenied() -> viewModel.setLocationPermissionDenied()
 			else -> Unit // nothing to do as we will ask for permission later
 		}
+
+		prepareNavigationElements()
 
 		viewModel.loadAllContracts()
 		viewModel.loadAllStations()
@@ -79,6 +89,31 @@ class MainActivity : AppCompatActivity() {
 				launch {
 					viewModel.searchResult.collect(::onSearchResult)
 				}
+			}
+			withCreated {
+				launch {
+					viewModel.location.collect(::onLocationStateUpdate)
+				}
+			}
+		}
+	}
+
+	private fun prepareNavigationElements() {
+
+		binding.mainActivityFragmentContainer.apply {
+			isUserInputEnabled = false
+			adapter = PagerAdapter(this@MainActivity, listOf(MapFragment.newInstance(), FavoriteFragment.newInstance()))
+		}
+
+		binding.mainActivityBottomNav.apply {
+			setOnItemSelectedListener {
+				val position = when (it.itemId) {
+					R.id.main_menu_map -> 0
+					R.id.main_menu_my_account -> 1
+					else -> return@setOnItemSelectedListener false
+				}
+				binding.mainActivityFragmentContainer.setCurrentItem(position, true)
+				true
 			}
 		}
 	}
@@ -112,13 +147,19 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun onLocationStateUpdate() {
-		permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+	private fun onLocationStateUpdate(state: LocationState) {
+		if (state is LocationState.Requesting) permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
 	}
 
 	override fun onDestroy() {
 		fusedLocationClient.removeLocationUpdates(locationCallback)
 		fusedLocationClient.flushLocations()
 		super.onDestroy()
+	}
+
+
+	private class PagerAdapter(fragmentActivity: FragmentActivity, private val fragments: List<Fragment>) : FragmentStateAdapter(fragmentActivity) {
+		override fun getItemCount(): Int = fragments.size
+		override fun createFragment(position: Int): Fragment = fragments[position]
 	}
 }

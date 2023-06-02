@@ -16,6 +16,10 @@ import kotlinx.coroutines.launch
 
 class FavoriteFragment : BaseFragment<FavoriteFragmentBinding>() {
 
+	companion object {
+		fun newInstance() = FavoriteFragment()
+	}
+
 	private val viewModel: MainViewModel by activityViewModels()
 	private val adapter by lazy { SearchAdapter(this::onStationClicked) }
 
