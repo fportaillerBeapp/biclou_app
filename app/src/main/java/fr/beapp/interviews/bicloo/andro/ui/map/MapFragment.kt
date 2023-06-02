@@ -9,9 +9,10 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
 import androidx.lifecycle.withCreated
+import androidx.lifecycle.withResumed
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import fr.beapp.interviews.bicloo.andro.R
@@ -19,6 +20,7 @@ import fr.beapp.interviews.bicloo.andro.databinding.MapFragmentBinding
 import fr.beapp.interviews.bicloo.andro.ui.MainViewModel
 import fr.beapp.interviews.bicloo.andro.ui.shared.BaseFragment
 import fr.beapp.interviews.bicloo.andro.ui.shared.location.LocationState
+import fr.beapp.interviews.bicloo.andro.ui.utils.BitmapUtils
 import fr.beapp.interviews.bicloo.andro.ui.utils.StationCluster
 import fr.beapp.interviews.bicloo.andro.ui.utils.hasForegroundLocationPermission
 import fr.beapp.interviews.bicloo.kmm.logic.station.entity.StationEntity
@@ -64,13 +66,17 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCall
 			true
 		}
 		lifecycleScope.launch {
-			whenResumed {
-				viewModel.stations.collect(::onStationsUpdate)
+			withResumed {
+				launch {
+					viewModel.stations.collect(::onStationsUpdate)
+				}
 			}
 		}
 		lifecycleScope.launch {
-			whenResumed {
-				viewModel.location.collect(::onUserLocationUpdate)
+			withResumed {
+				launch {
+					viewModel.location.collect(::onUserLocationUpdate)
+				}
 			}
 		}
 	}
@@ -109,8 +115,18 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCall
 			userMarker = null
 		} else {
 			binding.mapFragmentTopSearchBar.topSearchBarEnableLocation.isVisible = false
-			map.addMarker(MarkerOptions().position(state.location))
-			//TODO center and zoom in on the user
+			if (userMarker == null) {
+				userMarker = map.addMarker(
+					MarkerOptions()
+						.apply {
+							val bitmap = BitmapUtils.getBitmapFromVectorDrawable(requireContext(), R.drawable.ic_pin) ?: return@apply
+							icon(BitmapDescriptorFactory.fromBitmap(bitmap))
+						}
+						.position(state.location)
+				)
+				val zoom = if (map.cameraPosition.zoom < 10F) 16F else map.cameraPosition.zoom
+				map.moveCamera(CameraUpdateFactory.newLatLngZoom(state.location, zoom))
+			} else userMarker?.position = state.location
 		}
 	}
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +14,7 @@ import fr.beapp.interviews.bicloo.andro.databinding.SearchFragmentBinding
 import fr.beapp.interviews.bicloo.andro.ui.MainViewModel
 import fr.beapp.interviews.bicloo.andro.ui.search.state.SearchState
 import fr.beapp.interviews.bicloo.andro.ui.shared.BaseFragment
+import fr.beapp.interviews.bicloo.andro.ui.shared.location.LocationState
 import fr.beapp.interviews.bicloo.kmm.logic.station.entity.StationEntity
 import kotlinx.coroutines.launch
 
@@ -35,6 +37,11 @@ class SearchFragment : BaseFragment<SearchFragmentBinding>() {
 			withResumed {
 				launch {
 					viewModel.searchResult.collect(::onSearchStateUpdate)
+				}
+			}
+			withResumed {
+				launch {
+					viewModel.location.collect(::onLocationStateUpdate)
 				}
 			}
 		}
@@ -60,6 +67,10 @@ class SearchFragment : BaseFragment<SearchFragmentBinding>() {
 
 			is SearchState.Empty -> adapter.replaceAll(emptyMap())
 		}
+	}
+
+	private fun onLocationStateUpdate(state: LocationState) {
+		binding.searchFragmentTopSearchBar.topSearchBarEnableLocation.isVisible = state !is LocationState.Denied && state !is LocationState.Granted
 	}
 
 	private fun onStationClicked(stationEntity: StationEntity) = viewModel.onStationClicked(stationEntity)
