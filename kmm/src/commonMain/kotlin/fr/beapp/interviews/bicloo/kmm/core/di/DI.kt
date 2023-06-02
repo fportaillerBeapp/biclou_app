@@ -15,6 +15,7 @@ import fr.beapp.interviews.bicloo.kmm.data.station.StationDataSource
 import fr.beapp.interviews.bicloo.kmm.logic.contract.ContractManager
 import fr.beapp.interviews.bicloo.kmm.logic.station.StationManager
 import fr.beapp.interviews.bicloo.kmm.presentation.contract.ContractPresenter
+import fr.beapp.interviews.bicloo.kmm.presentation.preferences.PreferencesPresenter
 import fr.beapp.interviews.bicloo.kmm.presentation.station.StationPresenter
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
@@ -58,6 +59,9 @@ val DI = DI {
 	bind<ContractDataSource>() with singleton { ContractDataSource(instance()) }
 	bind<ContractManager>() with singleton { ContractManager(instance(), instance()) }
 	bind<ContractPresenter>() with singleton { ContractPresenter(instance()) }
+
+	// Preferences
+	bind<PreferencesPresenter>() with singleton { PreferencesPresenter() }
 
 }
 
