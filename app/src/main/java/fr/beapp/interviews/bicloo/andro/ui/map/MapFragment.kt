@@ -151,11 +151,17 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCall
 				StationEntity.StatusEnum.CLOSED -> getString(R.string.station_closed)
 				else -> getString(R.string.station_status_unknown)
 			}
-		binding.mapFragmentStationDetails.favoriteIcon.setOnClickListener {
-			val isFavorite = preferencesViewModel.togglePreferredStation(stationEntity)
+		with(binding.mapFragmentStationDetails.favoriteIcon) {
+			val isFavorite = preferencesViewModel.isStationFavorite(stationEntity)
 			binding.mapFragmentStationDetails.favoriteIcon.icon = if (isFavorite) ContextCompat.getDrawable(requireContext(), R.drawable.ic_favorite_filled)
 			else ContextCompat.getDrawable(requireContext(), R.drawable.ic_favorite_outlined)
-			preferencesViewModel.loadPreferences()
+
+			setOnClickListener {
+				val isFavorite = preferencesViewModel.togglePreferredStation(stationEntity)
+				binding.mapFragmentStationDetails.favoriteIcon.icon = if (isFavorite) ContextCompat.getDrawable(requireContext(), R.drawable.ic_favorite_filled)
+				else ContextCompat.getDrawable(requireContext(), R.drawable.ic_favorite_outlined)
+				preferencesViewModel.loadPreferences()
+			}
 		}
 		stationEntity.position?.toLatLong()?.let {
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 16F))

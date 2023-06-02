@@ -47,4 +47,8 @@ class PreferencesViewModel : ViewModel() {
 	}
 
 	fun isStationFavorite(station: StationEntity): Boolean = _preferences.value.stations.any { it.name == station.name && it.number == station.number }
+
+	fun clearFavoriteStations() {
+		preferencesPresenter.setPreferredStations(emptyList())
+	}
 }

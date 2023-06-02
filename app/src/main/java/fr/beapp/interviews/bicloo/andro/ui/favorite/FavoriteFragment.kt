@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
@@ -33,6 +34,8 @@ class FavoriteFragment : BaseFragment<FavoriteFragmentBinding>() {
 		super.onViewCreated(view, savedInstanceState)
 
 		binding.searchFragmentRecyclerView.adapter = adapter
+		binding.favoriteFragmentClearAll.isVisible = false
+		binding.favoriteFragmentClearAll.setOnClickListener { preferencesViewModel.clearFavoriteStations() }
 
 		viewLifecycleOwner.lifecycleScope.launch {
 			withResumed {
@@ -45,8 +48,14 @@ class FavoriteFragment : BaseFragment<FavoriteFragmentBinding>() {
 
 	private fun onPreferencesUpdate(state: PreferencesState) {
 		when (state) {
-			is PreferencesState.Empty -> adapter.clear()
-			is PreferencesState.Updated -> adapter.replaceAll(state.contract, state.stations)
+			is PreferencesState.Empty -> {
+				binding.favoriteFragmentClearAll.isVisible = false
+				adapter.clear()
+			}
+			is PreferencesState.Updated -> {
+				binding.favoriteFragmentClearAll.isVisible = true
+				adapter.replaceAll(state.contract, state.stations)
+			}
 		}
 	}
 

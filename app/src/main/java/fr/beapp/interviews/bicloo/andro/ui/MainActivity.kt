@@ -137,6 +137,11 @@ class MainActivity : AppCompatActivity() {
 
 	private fun showStationDetails(stationEntity: StationEntity?) {
 		hideKeyboard()
+		if (binding.mainActivityFragmentContainer.currentItem != 0) {
+			binding.mainActivityFragmentContainer.setCurrentItem(0, true)
+			binding.mainActivityBottomNav.menu.getItem(0).isChecked = true
+		}
+
 		if (stationEntity != null) binding.mainActivitySearchFragment.isVisible = false
 	}
 

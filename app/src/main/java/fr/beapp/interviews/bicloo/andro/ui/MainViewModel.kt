@@ -108,7 +108,7 @@ class MainViewModel : ViewModel() {
 	}
 
 	fun onStationClicked(stationEntity: StationEntity) {
-		_stationDetail.value = stationEntity
+		_stationDetail.update { stationEntity }
 	}
 
 	fun closeStationDetail() {
