@@ -9,9 +9,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
 import fr.beapp.interviews.bicloo.andro.databinding.FavoriteFragmentBinding
 import fr.beapp.interviews.bicloo.andro.ui.MainViewModel
-import fr.beapp.interviews.bicloo.andro.ui.search.SearchAdapter
 import fr.beapp.interviews.bicloo.andro.ui.shared.BaseFragment
-import fr.beapp.interviews.bicloo.kmm.logic.station.entity.StationEntity
+import fr.beapp.interviews.bicloo.andro.ui.shared.preferences.PreferencesViewModel
+import fr.beapp.interviews.bicloo.andro.ui.shared.preferences.state.PreferencesState
+import fr.beapp.interviews.bicloo.kmm.logic.contract.entity.ContractEntity
 import kotlinx.coroutines.launch
 
 class FavoriteFragment : BaseFragment<FavoriteFragmentBinding>() {
@@ -21,7 +22,8 @@ class FavoriteFragment : BaseFragment<FavoriteFragmentBinding>() {
 	}
 
 	private val viewModel: MainViewModel by activityViewModels()
-	private val adapter by lazy { SearchAdapter(this::onStationClicked) }
+	private val preferencesViewModel: PreferencesViewModel by activityViewModels()
+	private val adapter by lazy { FavoriteAdapter(viewModel::onStationClicked, ::onContractClicked) }
 
 	override fun buildViewBinding(inflater: LayoutInflater, container: ViewGroup?): FavoriteFragmentBinding {
 		return FavoriteFragmentBinding.inflate(inflater, container, false)
@@ -31,22 +33,25 @@ class FavoriteFragment : BaseFragment<FavoriteFragmentBinding>() {
 		super.onViewCreated(view, savedInstanceState)
 
 		binding.searchFragmentRecyclerView.adapter = adapter
-		// binding.searchFragmentTopSearchBar.topSearchBarSearchBar.editText?.setBackgroundResource(R.drawable.search_fragment_search_edit_background)
 
 		viewLifecycleOwner.lifecycleScope.launch {
 			withResumed {
 				launch {
-					//viewModel.searchResult.collect(::onSearchStateUpdate)
+					preferencesViewModel.preferences.collect(::onPreferencesUpdate)
 				}
 			}
 		}
-
-		/*binding.searchFragmentTopSearchBar.topSearchBarSearchBar.editText?.doAfterTextChanged {
-			val input = it?.toString() ?: return@doAfterTextChanged
-			viewModel.searchForStations(input)
-		}*/
 	}
 
-	private fun onStationClicked(stationEntity: StationEntity) = viewModel.onStationClicked(stationEntity)
+	private fun onPreferencesUpdate(state: PreferencesState) {
+		when (state) {
+			is PreferencesState.Empty -> adapter.clear()
+			is PreferencesState.Updated -> adapter.replaceAll(state.contract, state.stations)
+		}
+	}
+
+	private fun onContractClicked(contract: ContractEntity) {
+		//TODO: Feature Favorite Contract
+	}
 
 }

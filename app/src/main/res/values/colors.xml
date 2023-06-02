@@ -13,6 +13,8 @@
     <color name="lightBackground">@color/highlight_lightest</color>
     <color name="onLightBackground">@color/primary</color>
 
+    <color name="contractCardOutline">@color/neutral_light_darkest</color>
+
     <color name="highlight_darkest">#F88F28</color>
     <color name="highlight_dark">#FFA553</color>
     <color name="highlight_medium">#FFBC7E</color>

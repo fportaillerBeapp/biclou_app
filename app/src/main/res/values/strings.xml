@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Biclou</string>
 
-<!--  Tab bar  -->
+    <!--  Tab bar  -->
     <string name="mainMenu_map_title">Carte</string>
-    <string name="mainMenu_my_account_title">Mon Compte</string>
+    <string name="mainMenu_my_account_title">Mes Favoris</string>
 
     <!--  Top Search bar  -->
     <string name="topSearchBar_hint">Rechercher</string>
@@ -21,4 +21,12 @@
     <string name="itinerary_label">Itinéraire</string>
     <string name="from_label_button">En partir</string>
     <string name="goTo_label_button">Y aller</string>
+
+    <!--  Favorites  -->
+    <string name="favorite_contracts">Ma ville</string>
+    <string name="favorite_stations">Mes stations</string>
+    <string name="favoriteFragment_back">retour</string>
+    <string name="favoriteFragment_title">Mes favoris</string>
+    <string name="favoriteFragment_delete_favorites">Supprimer mes favoris</string>
+
 </resources>

@@ -1,51 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="@dimen/space_x_small"
     android:background="@drawable/station_search_background"
-    android:backgroundTint="@color/highlight_lightest">
+    android:backgroundTint="@color/highlight_lightest"
+    android:padding="@dimen/space_medium">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/stationName"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:textAlignment="textStart"
         android:lines="1"
-        android:layout_marginStart="@dimen/space_medium"
-        android:paddingTop="@dimen/space_medium"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/chevronIcon"
-        tools:text="Melinet"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Melinet" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/stationAvailability"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lines="1"
         android:padding="@dimen/space_medium"
-        app:layout_constraintTop_toBottomOf="@id/stationName"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Aucune places disponibles"
-        />
+        app:layout_constraintEnd_toEndOf="@id/stationName"
+        app:layout_constraintStart_toStartOf="@id/stationName"
+        app:layout_constraintTop_toBottomOf="@id/stationName"
+        tools:text="Aucune places disponibles" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/chevronIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/space_medium"
         android:drawableEnd="@drawable/ic_chevron_right"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:lines="1"
-        android:layout_marginEnd="@dimen/space_medium"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

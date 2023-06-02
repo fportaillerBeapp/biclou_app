@@ -26,6 +26,7 @@ import fr.beapp.interviews.bicloo.andro.ui.favorite.FavoriteFragment
 import fr.beapp.interviews.bicloo.andro.ui.map.MapFragment
 import fr.beapp.interviews.bicloo.andro.ui.search.state.SearchState
 import fr.beapp.interviews.bicloo.andro.ui.shared.location.LocationState
+import fr.beapp.interviews.bicloo.andro.ui.shared.preferences.PreferencesViewModel
 import fr.beapp.interviews.bicloo.andro.ui.utils.hasForegroundLocationPermission
 import fr.beapp.interviews.bicloo.andro.ui.utils.hasForegroundLocationPermissionDenied
 import fr.beapp.interviews.bicloo.andro.ui.utils.hideKeyboard
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
 	private lateinit var binding: MainActivityBinding
 	private val viewModel: MainViewModel by viewModels()
+	private val preferencesViewModel: PreferencesViewModel by viewModels()
 
 	private lateinit var fusedLocationClient: FusedLocationProviderClient
 	private val locationCallback by lazy {

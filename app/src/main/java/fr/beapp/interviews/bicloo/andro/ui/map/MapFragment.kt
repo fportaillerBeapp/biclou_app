@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
@@ -20,9 +21,11 @@ import fr.beapp.interviews.bicloo.andro.databinding.MapFragmentBinding
 import fr.beapp.interviews.bicloo.andro.ui.MainViewModel
 import fr.beapp.interviews.bicloo.andro.ui.shared.BaseFragment
 import fr.beapp.interviews.bicloo.andro.ui.shared.location.LocationState
+import fr.beapp.interviews.bicloo.andro.ui.shared.preferences.PreferencesViewModel
 import fr.beapp.interviews.bicloo.andro.ui.utils.BitmapUtils
 import fr.beapp.interviews.bicloo.andro.ui.utils.StationCluster
 import fr.beapp.interviews.bicloo.andro.ui.utils.hasForegroundLocationPermission
+import fr.beapp.interviews.bicloo.andro.utils.toLatLong
 import fr.beapp.interviews.bicloo.kmm.logic.station.entity.StationEntity
 import kotlinx.coroutines.launch
 
@@ -36,6 +39,7 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCall
 	private lateinit var cluster: StationCluster
 	private var userMarker: Marker? = null
 	private val viewModel: MainViewModel by activityViewModels()
+	private val preferencesViewModel: PreferencesViewModel by activityViewModels()
 
 	override fun buildViewBinding(inflater: LayoutInflater, container: ViewGroup?): MapFragmentBinding {
 		return MapFragmentBinding.inflate(inflater, container, false)
@@ -105,6 +109,7 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCall
 		}
 
 		viewModel.searchForStations("")
+		preferencesViewModel.loadPreferences()
 	}
 
 	private fun onStationsUpdate(stations: List<StationEntity>) {
@@ -147,11 +152,14 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCall
 				else -> getString(R.string.station_status_unknown)
 			}
 		binding.mapFragmentStationDetails.favoriteIcon.setOnClickListener {
-			// TODO
-			// Add into favorites station
-			//binding.mainActivityStationDetails.favoriteIcon.icon = if(isFavorite) getDrawable(R.drawable.ic_favorite_filled)  else getDrawable(R.drawable.ic_favorite_outlined)
+			val isFavorite = preferencesViewModel.togglePreferredStation(stationEntity)
+			binding.mapFragmentStationDetails.favoriteIcon.icon = if (isFavorite) ContextCompat.getDrawable(requireContext(), R.drawable.ic_favorite_filled)
+			else ContextCompat.getDrawable(requireContext(), R.drawable.ic_favorite_outlined)
+			preferencesViewModel.loadPreferences()
 		}
-		//TODO center map on station location
+		stationEntity.position?.toLatLong()?.let {
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 16F))
+		}
 		//TODO clear itineraries
 	}
 

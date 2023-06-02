@@ -9,3 +9,4 @@
 - Added App icon, set app name to Biclou
 - Added Location features
 - Added MainActivity navigation
+- Added FavoriteFragment and FavoriteViewModel

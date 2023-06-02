@@ -1,17 +1,9 @@
 package fr.beapp.interviews.bicloo.andro.ui.favorite.item
 
 import androidx.recyclerview.widget.RecyclerView
-import fr.beapp.interviews.bicloo.andro.databinding.FavoriteViewHolderBinding
-import fr.beapp.interviews.bicloo.kmm.logic.station.entity.StationEntity
+import androidx.viewbinding.ViewBinding
 
-class FavoriteViewHolder(
-	private val binding: FavoriteViewHolderBinding,
-	private val onStationClicked: (StationEntity) -> Unit
-) : RecyclerView.ViewHolder(binding.root) {
+abstract class FavoriteViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
 
-	fun bind(station: StationEntity) {
-		binding.stationName.text = station.name
-		binding.stationAvailability.text
-		binding.root.setOnClickListener { onStationClicked(station) }
-	}
+	abstract fun bind(item: FavoriteItem)
 }
