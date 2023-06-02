@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import fr.beapp.interviews.bicloo.andro.ui.search.state.SearchState
+import fr.beapp.interviews.bicloo.andro.ui.shared.location.LocationState
 import fr.beapp.interviews.bicloo.andro.utils.toLatLong
 import fr.beapp.interviews.bicloo.andro.utils.toRadialBounds
 import fr.beapp.interviews.bicloo.kmm.ServiceLocator
@@ -37,13 +38,9 @@ class MainViewModel : ViewModel() {
 	val stationDetail: StateFlow<StationEntity?>
 		get() = _stationDetail.asStateFlow()
 
-	private val _location: MutableStateFlow<LatLng?> = MutableStateFlow(null)
-	val location: StateFlow<LatLng?>
+	private val _location: MutableStateFlow<LocationState> = MutableStateFlow(LocationState.NotYetRequested)
+	val location: StateFlow<LocationState>
 		get() = _location.asStateFlow()
-
-	private val _shouldRequestLocationPermission: MutableStateFlow<Boolean> = MutableStateFlow(false)
-	val shouldRequestLocationPermission: StateFlow<Boolean>
-		get() = _shouldRequestLocationPermission.asStateFlow()
 
 	fun loadAllContracts() {
 		viewModelScope.launch {
@@ -68,7 +65,7 @@ class MainViewModel : ViewModel() {
 	fun searchForStations(query: String) {
 
 		viewModelScope.launch {
-			val currentLocation = _location.value
+			val currentLocation = (_location.value as? LocationState.Granted)?.location
 			val querySearch = if (query.length > 2) async { SearchState.SearchType.QUERY to searchStationByQuery(query) } else null
 			val locationSearch = if (currentLocation != null) async { SearchState.SearchType.LOCATION to searchStationByLocation(currentLocation) } else null
 			val recentSearch = async { SearchState.SearchType.RECENT to searchStationByRecent(query) }
@@ -119,10 +116,23 @@ class MainViewModel : ViewModel() {
 	}
 
 	fun setLocation(latLng: LatLng?) {
-		_location.value = latLng
+		when (_location.value) {
+			is LocationState.Denied -> return
+			is LocationState.NotYetRequested -> _location.value = LocationState.Requesting
+			is LocationState.Requesting -> return
+			is LocationState.Granted -> _location.value = LocationState.Granted(latLng)
+		}
 	}
 
 	fun requestLocationPermission() {
-		_shouldRequestLocationPermission.value = true
+		_location.value = LocationState.Requesting
+	}
+
+	fun setLocationPermissionDenied() {
+		_location.value = LocationState.Denied
+	}
+
+	fun setLocationPermissionGranted() {
+		_location.value = LocationState.Granted(null)
 	}
 }
