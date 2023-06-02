@@ -20,14 +20,11 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.OnMapsSdkInitializedCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import fr.beapp.interviews.bicloo.andro.R
 import fr.beapp.interviews.bicloo.andro.databinding.MapFragmentBinding
 import fr.beapp.interviews.bicloo.andro.ui.MainViewModel
 import fr.beapp.interviews.bicloo.andro.ui.shared.BaseFragment
@@ -90,7 +87,12 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCall
 		map = googleMap
 		cluster = StationCluster(requireContext(), map)
 		map.setOnCameraIdleListener(cluster)
-		map.setOnMarkerClickListener(cluster)
+		cluster.setOnClusterItemClickListener {
+			val station = it.station
+			viewModel.onStationClicked(station)
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(it.position, 16F))
+			true
+		}
 		lifecycleScope.launch {
 			whenResumed {
 				viewModel.stations.collect(::onStationsUpdate)
@@ -112,7 +114,7 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCall
 			topSearchBarSearchBar.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
 				if (hasFocus) {
 					viewModel.closeStationDetail()
-				}else {
+				} else {
 					topSearchBarSearchBar.editText?.setText("")
 				}
 			}
@@ -163,7 +165,19 @@ class MapFragment : BaseFragment<MapFragmentBinding>(), OnMapsSdkInitializedCall
 		//if (stationEntity != null) binding.mainActivitySearchFragment.isVisible = false
 		binding.mapFragmentStationDetailsContainer.isVisible = stationEntity != null
 		if (stationEntity == null) return
-		//TODO bind station Details view here (binding.mainActivityStationDetails....)
+		binding.mapFragmentStationDetails.stationName.text = stationEntity.name
+		binding.mapFragmentStationDetails.stationAddress.text = stationEntity.address
+		binding.mapFragmentStationDetails.stationAvailability.text =
+			when (stationEntity.status) {
+				StationEntity.StatusEnum.OPEN -> getString(R.string.station_opened)
+				StationEntity.StatusEnum.CLOSED -> getString(R.string.station_closed)
+				else -> getString(R.string.station_status_unknown)
+			}
+		binding.mapFragmentStationDetails.favoriteIcon.setOnClickListener {
+			// TODO
+			// Add into favorites station
+			//binding.mainActivityStationDetails.favoriteIcon.icon = if(isFavorite) getDrawable(R.drawable.ic_favorite_filled)  else getDrawable(R.drawable.ic_favorite_outlined)
+		}
 		//TODO center map on station location
 		//TODO clear itineraries
 	}

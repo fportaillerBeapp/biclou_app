@@ -17,7 +17,7 @@ class StationCluster(context: Context, map: GoogleMap) : ClusterManager<StationC
 
 
 	class StationClusterItem(
-		private val station: StationEntity,
+		val station: StationEntity,
 	) : ClusterItem {
 		override fun getPosition(): LatLng = station.position?.toLatLong() ?: throw IllegalStateException("Station position must not be null")
 

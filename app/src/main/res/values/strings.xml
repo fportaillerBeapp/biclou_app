@@ -9,4 +9,12 @@
     <string name="searchFragment_recent_label">Récent</string>
     <string name="topSearchBar_enable_location">Me localiser</string>
     <string name="searchFragment_enable_location">Utiliser ma localisation</string>
+
+    <!--  Details station  -->
+    <string name="station_opened">Station ouverte </string>
+    <string name="station_closed">Station fermée</string>
+    <string name="station_status_unknown">Status de la station inconnu</string>
+    <string name="itinerary_label">Itinéraire</string>
+    <string name="from_label_button">En partir</string>
+    <string name="goTo_label_button">Y aller</string>
 </resources>
