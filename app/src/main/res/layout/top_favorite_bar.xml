@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/space_medium"
+    android:paddingStart="@dimen/space_medium"
+    tools:ignore="RtlSymmetry">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/topSearchBarSearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/space_medium"
+        android:backgroundTint="@color/secondary"
+        android:hint="@string/topSearchBar_hint"
+        app:hintTextColor="@color/neutral_dark_lightest"
+        app:layout_constraintTop_toTopOf="parent"
+        app:startIconDrawable="@drawable/ic_search"
+        app:startIconTint="@color/onBackground">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Machine de L'île"
+            android:textColor="@color/onBackground"
+            android:background="@drawable/search_edit_background"
+            android:imeOptions="actionSearch"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/topSearchBarEnableLocation"
+        style="@style/LocationButton"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/space_x_small"
+        android:layout_height="wrap_content"
+        android:text="@string/topSearchBar_enable_location"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topSearchBarSearchBar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
